@@ -37,7 +37,7 @@ class ReportsNavbar extends React.Component {
       <Navbar bg="light">
         <Navbar.Brand href="/">На главную</Navbar.Brand>
         <Nav className="mr-auto">
-          <Nav.Link onClick={this.getTechnicians}>Техники</Nav.Link>
+          <Nav.Link href="/technicians">Техники</Nav.Link>
         </Nav>
         <Button variant="primary" onClick={ this.exit }>Выйти</Button>
       </Navbar>

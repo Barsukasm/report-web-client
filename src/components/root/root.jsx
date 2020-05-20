@@ -6,7 +6,7 @@ import "./root.css";
 
 import { getCurrentUser } from "../../utils/user-authorization";
 import LoginPage from "../login-page";
-import Reports from "../reports";
+import TechniciansReports from "../technicians-reports";
 
 const AuthorizedRoute = ({ ...props }) => getCurrentUser() ? <Route { ...props } /> : <Redirect to="/login" />;
 
@@ -16,7 +16,8 @@ class Root extends React.Component {
       <Router>
         <Switch>
           <Route path="/login" component={ LoginPage }/>
-          <AuthorizedRoute exact path="/" component={ Reports } />
+          <AuthorizedRoute path="/technicians" component={ TechniciansReports } />
+          <AuthorizedRoute component={ TechniciansReports } />
         </Switch>
       </Router>
     );

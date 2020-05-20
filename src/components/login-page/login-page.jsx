@@ -31,7 +31,7 @@ class LoginPage extends React.Component {
       .then((response) => {
         if (response.status === 200) {
           saveCurrentUser(response.data);
-          this.props.history.push("/");
+          this.props.history.push("/technicians");
         } else {
           this.setState({ message: response.data.message })
         }

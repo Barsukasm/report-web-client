@@ -8,10 +8,10 @@ import {getCurrentUser} from "../../utils/user-authorization";
 import ChartOptionSelector from "../chart-option-selector";
 import {techniciansOptions} from "../../utils/constants";
 
-import "./reports.scss";
+import "./technicians-reports.scss";
 import "react-datepicker/dist/react-datepicker.css";
 
-class Reports extends React.Component {
+class TechniciansReports extends React.Component {
 
   state = {
     beginDate: new Date('2020-04-01'),
@@ -107,4 +107,4 @@ class Reports extends React.Component {
   }
 }
 
-export default Reports;
+export default TechniciansReports;
