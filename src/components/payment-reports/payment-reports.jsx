@@ -7,25 +7,89 @@ import ReportsNavbar from "../reports-navbar";
 import {getCurrentUser} from "../../utils/user-authorization";
 import ChartOptionSelector from "../chart-option-selector";
 import {techniciansOptions} from "../../utils/constants";
+import {getCurrentPayPerMonth, getDataByEntityId, parseEntities} from "../../utils/parser";
 
 class PaymentReports extends React.Component {
   state = {
-    beginDate: new Date('2020-04-01'),
-    endDate: new Date('2020-05-31'),
+    contractorId: 0,
+    year: 2019,
     originalData: [],
-    data: [],
+    data: null,
     dataLoadStatus: false,
     availableOptions: techniciansOptions,
-    selectedOption: techniciansOptions[0]
+    selectedOption: techniciansOptions[0],
+    selectedPaymentType: 2
+  };
+
+  updateSelectedOption = option => {
+    this.setState({
+      selectedOption: option
+    });
+  };
+
+  handleBeginDateChange = date => {
+    this.setState({ beginDate: date});
+  };
+
+  handleEndDateChange = date => {
+    this.setState({ endDate: date});
+  };
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const { selectedOption, originalData, beginDate, endDate } = this.state;
+    if (selectedOption !== prevState.selectedOption) {
+      this.setChartData(originalData, selectedOption);
+    }
+    if (beginDate !== prevState.beginDate || endDate !== prevState.endDate) {
+      this.getTechnicians();
+    }
+  }
+
+  setChartData = (newData, option) => {
+    const data = [['Техник', option.name]];
+    newData.forEach(element => data.push([element.name, element[option.key]]));
+    this.setState({ data, dataLoadStatus: true, originalData: newData });
+  };
+
+  getPaymentReport = () => {
+    const { contractorId, year, selectedPaymentType } = this.state,
+      token = getCurrentUser().sessionToken;
+    firefighterAPI
+      .get(`/api/report/payment${selectedPaymentType}?id=${contractorId}&year=${year}&filetype=0`, {
+        headers: {
+          SessionToken: token
+        }
+      })
+      .then((response) => {
+        console.log(response.data)
+        console.log(parseEntities(response.data.pays.data))
+        const firstEntity = parseEntities(response.data.pays.data)[0],
+              data = getCurrentPayPerMonth(getDataByEntityId(response.data, firstEntity.id));
+        console.log(getCurrentPayPerMonth(getDataByEntityId(response.data, firstEntity.id)))
+        this.setState({ data, dataLoadStatus: true });
+        // this.setChartData(response.data.data, selectedOption);
+      })
+      .catch(error => {
+        if (error.response){
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        }else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      });
   };
 
   render() {
     const {dataLoadStatus, data, beginDate, endDate, availableOptions} = this.state;
+    if (!data) this.getPaymentReport();
     return (
       <div>
         <ReportsNavbar
           history={ this.props.history }
-          getTechnicians={ this.getTechnicians }
         />
         { dataLoadStatus &&
         <div className="chart-wrapper">
