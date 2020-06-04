@@ -1,14 +1,17 @@
 export function parseEntities(data) {
-  return data.map(entity => ({ id: entity.id, title: entity.title }));
+  return data.map(entity => ({ key: entity.id, name: entity.title }));
 }
 
 export function getCurrentPayPerMonth(data) {
   console.log('data in getCurrentPayPerMonth: ', data)
-  const response = [['Месяц', 'Оплата по счету - выставлена']],
-        rows = data.map(element => [
-          new Date(element[0].reglamentDate.timeInMS).toLocaleDateString('ru', { month: 'long' }),
-          element[0].currentPay
-        ]);
+  const response = [['Месяц', 'Оплата по счету']],
+        rows = data.reduce((array, month) => {
+          const result = month.map(payment => [
+            new Date(payment.reglamentDate.timeInMS).toLocaleDateString('ru', { month: 'long', day: 'numeric' }),
+            payment.currentPay
+          ]);
+          return array.concat(result);
+        }, []);
   return response.concat(rows);
 }
 

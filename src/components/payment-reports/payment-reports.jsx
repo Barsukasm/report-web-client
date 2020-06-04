@@ -6,18 +6,19 @@ import firefighterAPI from "../../api/firefighter-api";
 import ReportsNavbar from "../reports-navbar";
 import {getCurrentUser} from "../../utils/user-authorization";
 import ChartOptionSelector from "../chart-option-selector";
-import {techniciansOptions} from "../../utils/constants";
 import {getCurrentPayPerMonth, getDataByEntityId, parseEntities} from "../../utils/parser";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 class PaymentReports extends React.Component {
   state = {
     contractorId: 0,
-    year: 2019,
+    year: new Date('2020'),
     originalData: [],
     data: null,
     dataLoadStatus: false,
-    availableOptions: techniciansOptions,
-    selectedOption: techniciansOptions[0],
+    availableOptions: [],
+    selectedOption: null,
     selectedPaymentType: 2
   };
 
@@ -27,27 +28,22 @@ class PaymentReports extends React.Component {
     });
   };
 
-  handleBeginDateChange = date => {
-    this.setState({ beginDate: date});
-  };
-
-  handleEndDateChange = date => {
-    this.setState({ endDate: date});
+  handleYearChange = date => {
+    this.setState({ year: date});
   };
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    const { selectedOption, originalData, beginDate, endDate } = this.state;
+    const { selectedOption, originalData, year } = this.state;
     if (selectedOption !== prevState.selectedOption) {
       this.setChartData(originalData, selectedOption);
     }
-    if (beginDate !== prevState.beginDate || endDate !== prevState.endDate) {
-      this.getTechnicians();
+    if (year !== prevState.year) {
+      this.getPaymentReport();
     }
   }
 
   setChartData = (newData, option) => {
-    const data = [['Техник', option.name]];
-    newData.forEach(element => data.push([element.name, element[option.key]]));
+    const data = getCurrentPayPerMonth(getDataByEntityId(newData, option.key));
     this.setState({ data, dataLoadStatus: true, originalData: newData });
   };
 
@@ -55,19 +51,27 @@ class PaymentReports extends React.Component {
     const { contractorId, year, selectedPaymentType } = this.state,
       token = getCurrentUser().sessionToken;
     firefighterAPI
-      .get(`/api/report/payment${selectedPaymentType}?id=${contractorId}&year=${year}&filetype=0`, {
+      .get(`/api/report/payment${selectedPaymentType}?id=${contractorId}&year=${year.getFullYear()}&filetype=0`, {
         headers: {
           SessionToken: token
         }
       })
       .then((response) => {
-        console.log(response.data)
-        console.log(parseEntities(response.data.pays.data))
-        const firstEntity = parseEntities(response.data.pays.data)[0],
-              data = getCurrentPayPerMonth(getDataByEntityId(response.data, firstEntity.id));
-        console.log(getCurrentPayPerMonth(getDataByEntityId(response.data, firstEntity.id)))
-        this.setState({ data, dataLoadStatus: true });
-        // this.setChartData(response.data.data, selectedOption);
+        const options = parseEntities(response.data.pays.data),
+              data = getCurrentPayPerMonth(getDataByEntityId(response.data, options[0].key));
+        // response.data.pays.data.forEach(entity => {
+        //   console.log('entity.title: ', entity.title)
+        //   console.log('entity.data.length: ', entity.data.length)
+        //   entity.data.length > 1 && console.log('entity.data.length > 1: ', entity.data.length > 1)
+        //   getCurrentPayPerMonth(entity.data[0].data)
+        // })
+        this.setState({
+          data,
+          dataLoadStatus: true,
+          availableOptions: options,
+          selectedOption: options[0],
+          originalData: response.data
+        });
       })
       .catch(error => {
         if (error.response){
@@ -84,7 +88,7 @@ class PaymentReports extends React.Component {
   };
 
   render() {
-    const {dataLoadStatus, data, beginDate, endDate, availableOptions} = this.state;
+    const {dataLoadStatus, data, year, availableOptions} = this.state;
     if (!data) this.getPaymentReport();
     return (
       <div>
@@ -100,14 +104,21 @@ class PaymentReports extends React.Component {
             data={data}
           />
           <div>
-            <ChartOptionSelector updateSelectedOption={ this.updateSelectedOption } options={availableOptions} />
             <div>
-              <label>Начальная дата: </label>
-              <DatePicker selected={beginDate} onChange={this.handleBeginDateChange}/>
+              <label>Год: </label>
+              <DatePicker
+                selected={year}
+                onChange={this.handleYearChange}
+                showYearPicker
+                dateFormat="yyyy"
+              />
             </div>
             <div>
-              <label>Конечная дата: </label>
-              <DatePicker selected={endDate} onChange={this.handleEndDateChange}/>
+              <label>Агенты:</label>
+              <ChartOptionSelector
+                updateSelectedOption={ this.updateSelectedOption }
+                options={availableOptions}
+              />
             </div>
           </div>
         </div>
