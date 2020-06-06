@@ -28,3 +28,9 @@ export const techniciansOptions = [
   {name: 'Всего по голосовым', key: 'voiceTotalCount'},
   {name: 'Голосовые обслуженные', key: 'voiceRealCount'}
 ];
+
+export const paymentTypeOptions = [
+  { name: "Контрагенты", key: 2 },
+  { name: "Техники", key: 3 },
+  { name: "Обслуживающие организации", key: 4 }
+];
