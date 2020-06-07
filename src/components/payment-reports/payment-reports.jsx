@@ -98,42 +98,42 @@ class PaymentReports extends React.Component {
         <ReportsNavbar
           history={ this.props.history }
         />
-        { dataLoadStatus &&
         <div className="chart-wrapper">
+          { dataLoadStatus &&
           <Chart
             width={'1000px'}
             height={'600px'}
             chartType={"ColumnChart"}
             data={data}
           />
+          }
+          { !dataLoadStatus && <div className="chart-wrapper">Загружаем данные</div> }
           <div>
-            <div>
-              <label>Год: </label>
-              <DatePicker
-                selected={year}
-                onChange={this.handleYearChange}
-                showYearPicker
-                dateFormat="yyyy"
-              />
-            </div>
-            <div>
-              <label>{selectedPaymentType.name}:</label>
-              <ChartOptionSelector
-                updateSelectedOption={ this.updateSelectedOption }
-                options={ availableOptions }
-              />
-            </div>
-            <div>
-              <label>Категория:</label>
-              <ChartOptionSelector
-                updateSelectedOption={ this.updatePaymentType }
-                options={ paymentTypes }
-              />
-            </div>
+            <label>Год: </label>
+            <DatePicker
+              selected={year}
+              onChange={this.handleYearChange}
+              showYearPicker
+              dateFormat="yyyy"
+            />
+          </div>
+          { availableOptions && dataLoadStatus &&
+          <div>
+            <label>{selectedPaymentType.name}:</label>
+            <ChartOptionSelector
+              updateSelectedOption={ this.updateSelectedOption }
+              options={ availableOptions }
+            />
+          </div>
+          }
+          <div>
+            <label>Категория:</label>
+            <ChartOptionSelector
+              updateSelectedOption={ this.updatePaymentType }
+              options={ paymentTypes }
+            />
           </div>
         </div>
-        }
-        { !dataLoadStatus && <div className="chart-wrapper">Загружаем данные</div> }
       </div>
     );
   }

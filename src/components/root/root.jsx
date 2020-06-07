@@ -8,6 +8,7 @@ import { getCurrentUser } from "../../utils/user-authorization";
 import LoginPage from "../login-page";
 import TechniciansReports from "../technicians-reports";
 import PaymentReports from "../payment-reports";
+import DebtReports from "../debt-reports";
 
 const AuthorizedRoute = ({ ...props }) => getCurrentUser() ? <Route { ...props } /> : <Redirect to="/login" />;
 
@@ -19,6 +20,7 @@ class Root extends React.Component {
           <Route path="/login" component={ LoginPage }/>
           <AuthorizedRoute path="/technicians" component={ TechniciansReports } />
           <AuthorizedRoute path="/payments" component={ PaymentReports } />
+          <AuthorizedRoute path="/debts" component={ DebtReports } />
           <AuthorizedRoute component={ TechniciansReports } />
         </Switch>
       </Router>

@@ -4,15 +4,6 @@ import firefighterAPI from "../../api/firefighter-api";
 import {getCurrentUser, saveCurrentUser} from "../../utils/user-authorization";
 
 class ReportsNavbar extends React.Component {
-  state = {
-    beginDate: '2020-04-01',
-    endDate: '2020-05-31'
-  };
-
-  getTechnicians = () => {
-    this.props.getTechnicians();
-  };
-
   exit = () => {
     const token = getCurrentUser().sessionToken;
     firefighterAPI
@@ -39,6 +30,7 @@ class ReportsNavbar extends React.Component {
         <Nav className="mr-auto">
           <Nav.Link href="/technicians">Техники</Nav.Link>
           <Nav.Link href="/payments">Оплаты</Nav.Link>
+          <Nav.Link href="/debts">Долги</Nav.Link>
         </Nav>
         <Button variant="primary" onClick={ this.exit }>Выйти</Button>
       </Navbar>

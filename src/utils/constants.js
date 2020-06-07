@@ -34,3 +34,9 @@ export const paymentTypeOptions = [
   { name: "Техники", key: 3 },
   { name: "Обслуживающие организации", key: 4 }
 ];
+
+export const debtReportTypeOptions = [
+  { name: "Контрагенты", key: "cotractor" },
+  { name: "Техники", key: "technician" },
+  { name: "Обслуживающие организации", key: "service" }
+];
