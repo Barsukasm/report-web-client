@@ -15,10 +15,10 @@ class ChartOptionSelector extends React.Component {
 
 
   render() {
-    const { options } = this.props;
+    const { options, disabled } = this.props;
     return (
       <Form>
-        <Form.Control as="select" onChange={this.handleSelectChange}>
+        <Form.Control as="select" onChange={this.handleSelectChange} disabled={ disabled } >
           {options.map((option, index) => (
             <option key={option.key} value={index}>{ option.name }</option>
           ))}

@@ -105,6 +105,13 @@ class PaymentReports extends React.Component {
             height={'600px'}
             chartType={"ColumnChart"}
             data={data}
+            options={{
+              hAxis: {
+                minTextSpacing: 20,
+                slantedText: false,
+                maxAlternation: 1
+              }
+            }}
           />
           }
           { !dataLoadStatus && <div className="chart-wrapper">Загружаем данные</div> }
@@ -115,6 +122,7 @@ class PaymentReports extends React.Component {
               onChange={this.handleYearChange}
               showYearPicker
               dateFormat="yyyy"
+              disabled={!dataLoadStatus}
             />
           </div>
           { availableOptions && dataLoadStatus &&
@@ -131,6 +139,7 @@ class PaymentReports extends React.Component {
             <ChartOptionSelector
               updateSelectedOption={ this.updatePaymentType }
               options={ paymentTypes }
+              disabled={!dataLoadStatus}
             />
           </div>
         </div>

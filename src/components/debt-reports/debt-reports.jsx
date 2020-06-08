@@ -122,16 +122,32 @@ class DebtReports extends React.Component {
             height={'600px'}
             chartType={"ColumnChart"}
             data={data}
+            options={{
+              hAxis: {
+                minTextSpacing: 20,
+                slantedText: false
+              }
+            }}
           />
           }
           { !dataLoadStatus && <div className="chart-wrapper">Загружаем данные</div> }
           <div>
             <label>Начальная дата: </label>
-            <DatePicker selected={beginDate} locale="ru" dateFormat="dd.MM.yyyy" onChange={this.handleBeginDateChange}/>
+            <DatePicker
+              selected={beginDate}
+              locale="ru"
+              dateFormat="dd.MM.yyyy"
+              onChange={this.handleBeginDateChange}
+              disabled={!dataLoadStatus}/>
           </div>
           <div>
             <label>Конечная дата: </label>
-            <DatePicker selected={endDate} locale="ru" dateFormat="dd.MM.yyyy" onChange={this.handleEndDateChange}/>
+            <DatePicker
+              selected={endDate}
+              locale="ru"
+              dateFormat="dd.MM.yyyy"
+              onChange={this.handleEndDateChange}
+              disabled={!dataLoadStatus}/>
           </div>
           { availableOptions && dataLoadStatus &&
           <div>
@@ -155,6 +171,7 @@ class DebtReports extends React.Component {
             <ChartOptionSelector
               updateSelectedOption={ this.updateDebtType }
               options={ debtTypes }
+              disabled={!dataLoadStatus}
             />
           </div>
         </div>
