@@ -80,11 +80,8 @@ class DebtReports extends React.Component {
         }
       })
       .then((response) => {
-        // console.log('response: ', response)
         const entities = parseEntities(response.data.data.data),
               data = getCurrentDebtPerMonth(response.data, entities[0].key);
-        // console.log('entities: ', entities)
-        // console.log('data: ', data)
         this.setState({
           data,
           dataLoadStatus: true,

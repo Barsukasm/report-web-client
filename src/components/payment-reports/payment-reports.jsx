@@ -60,11 +60,14 @@ class PaymentReports extends React.Component {
     const { contractorId, year, selectedPaymentType } = this.state,
       token = getCurrentUser().sessionToken;
     firefighterAPI
-      .get(`/api/report/payment${selectedPaymentType.key}?id=${contractorId}&year=${year.getFullYear()}&filetype=0`, {
-        headers: {
-          SessionToken: token
+      .get(
+        `/api/report/payment${selectedPaymentType.key}?id=${contractorId}&year=${year.getFullYear()}&filetype=0`,
+        {
+          headers: {
+            SessionToken: token
+          }
         }
-      })
+      )
       .then((response) => {
         const options = parseEntities(response.data.pays.data),
               data = getCurrentPayPerMonth(response.data, options[0].key);
